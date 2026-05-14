@@ -1,0 +1,347 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API HUB Irroba",
+        "description": "Documentação da API de integração para e-commerce. Processamento assíncrono de catálogo via Amazon SQS.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Servidor Local (Docker)"
+        }
+    ],
+    "paths": {
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Produtos BUSCAR"
+                ],
+                "summary": "Lista todos os produtos (Catálogo)",
+                "description": "Retorna uma lista paginada dos produtos existentes no banco de dados. Útil para o recrutador validar o estado dos dados antes e depois do processamento das filas.",
+                "operationId": "getProducts",
+                "responses": {
+                    "200": {
+                        "description": "Lista de produtos retornada com sucesso"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{sku}": {
+            "get": {
+                "tags": [
+                    "Produtos BUSCAR"
+                ],
+                "summary": "Busca os detalhes de um produto específico",
+                "operationId": "getProductBySku",
+                "parameters": [
+                    {
+                        "name": "sku",
+                        "in": "path",
+                        "description": "Código único do produto",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "SKU-12345"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Produto encontrado"
+                    },
+                    "404": {
+                        "description": "Produto não encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{sku}/price": {
+            "patch": {
+                "tags": [
+                    "Produtos ATUALIZAR"
+                ],
+                "summary": "Atualiza o preço do produto",
+                "operationId": "updatePrice",
+                "parameters": [
+                    {
+                        "name": "sku",
+                        "in": "path",
+                        "description": "Código único do produto",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "SKU-12345"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "price"
+                                ],
+                                "properties": {
+                                    "price": {
+                                        "type": "number",
+                                        "example": 299.9
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Solicitação aceita e enviada para a fila SQS"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{sku}/stock": {
+            "patch": {
+                "tags": [
+                    "Produtos ATUALIZAR"
+                ],
+                "summary": "Atualiza o estoque do produto",
+                "operationId": "updateStock",
+                "parameters": [
+                    {
+                        "name": "sku",
+                        "in": "path",
+                        "description": "Código único do produto",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "SKU-12345"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "stock"
+                                ],
+                                "properties": {
+                                    "stock": {
+                                        "type": "integer",
+                                        "example": 50
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Solicitação aceita e enviada para a fila SQS"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{sku}/description": {
+            "patch": {
+                "tags": [
+                    "Produtos ATUALIZAR"
+                ],
+                "summary": "Atualiza a descrição",
+                "operationId": "updateDescription",
+                "parameters": [
+                    {
+                        "name": "sku",
+                        "in": "path",
+                        "description": "Código único do produto",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "SKU-12345"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "description"
+                                ],
+                                "properties": {
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Nova descrição detalhada do produto..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Solicitação aceita e enviada para a fila SQS"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{sku}/images": {
+            "patch": {
+                "tags": [
+                    "Produtos ATUALIZAR"
+                ],
+                "summary": "Atualiza as imagens do produto",
+                "operationId": "updateImages",
+                "parameters": [
+                    {
+                        "name": "sku",
+                        "in": "path",
+                        "description": "Código único do produto",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "SKU-12345"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "images"
+                                ],
+                                "properties": {
+                                    "images": {
+                                        "description": "Lista de URLs das imagens",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "https://meusite.com/imagem1.jpg"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Solicitação aceita e enviada para a fila SQS"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{sku}/tags": {
+            "patch": {
+                "tags": [
+                    "Produtos ATUALIZAR"
+                ],
+                "summary": "Atualiza as tags do produto",
+                "operationId": "updateTags",
+                "parameters": [
+                    {
+                        "name": "sku",
+                        "in": "path",
+                        "description": "Código único do produto",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "SKU-12345"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "tags"
+                                ],
+                                "properties": {
+                                    "tags": {
+                                        "description": "Palavras-chave do produto",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "lancamento"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Solicitação aceita e enviada para a fila SQS"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Produtos BUSCAR",
+            "description": "Produtos BUSCAR"
+        },
+        {
+            "name": "Produtos ATUALIZAR",
+            "description": "Produtos ATUALIZAR"
+        }
+    ]
+}
